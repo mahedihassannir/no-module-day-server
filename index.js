@@ -20,7 +20,7 @@ require("dotenv").config();
 // here is the config of mongodb
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_EMAIL}:${process.env.DB_PASS}@cluster0.obla9o6.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -38,6 +38,43 @@ async function run() {
         await client.connect();
 
         const dbBase = client.db("postContainer").collection("postes")
+
+        // here is making the url or coursor starts 
+
+        app.get('/posts', async (req, res) => {
+
+            const coursor = dbBase.find()
+
+            const result = await coursor.toArray()
+
+            res.send(result)
+
+        })
+
+        // here is making the url or coursor starts ends
+
+        // =========================================
+
+        // here is the delete method starts
+
+        app.delete('/posts/:id', async (req, res) => {
+
+            const id = req.params.id
+
+            const query = { _id: new ObjectId(id) }
+
+            const result = await dbBase.deleteOne(query)
+
+            res.send(result)
+
+
+        })
+
+
+
+        // here is the delete method  ends
+
+        // =========================================
 
         // post method starts
 
@@ -71,13 +108,6 @@ run().catch(console.dir);
 
 
 // here is the config of mongodb ends
-
-
-
-
-
-
-
 
 
 
